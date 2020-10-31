@@ -4,12 +4,23 @@
 import logging
 import aiomysql
 
-
 def log(sql, args=()):
+    """
+    该函数无非是调用logging
+    :param sql:
+    :param args: 类型是列表,应该可以删除？
+    :return: None
+    """
     logging.info('SQL: %s' % sql)
 
-
+#
 async def create_pool(loop, **kw):
+    """
+
+    :param loop:
+    :param kw:
+    :return:
+    """
     logging.info('create database connection pool ...')
     global __pool
     __pool = await aiomysql.create_pool(
@@ -27,6 +38,13 @@ async def create_pool(loop, **kw):
 
 
 async def select(sql, args, size=None):
+    """
+
+    :param sql:
+    :param args:
+    :param size:
+    :return:
+    """
     log(sql, args)
     global __pool
     async with __pool.get() as conn:
@@ -41,6 +59,13 @@ async def select(sql, args, size=None):
 
 
 async def execute(sql, args, autocommit=True):
+    """
+
+    :param sql:
+    :param args:
+    :param autocommit:
+    :return:
+    """
     log(sql)
     async with __pool.get() as conn:
         if not autocommit:
@@ -59,6 +84,11 @@ async def execute(sql, args, autocommit=True):
 
 
 def create_args_string(num):
+    """
+
+    :param num:
+    :return:
+    """
     L = []
     for n in range(num):
         L.append('?')
@@ -66,6 +96,9 @@ def create_args_string(num):
 
 
 class Field(object):
+    """
+
+    """
     def __init__(self, name, column_type, primary_key, default):
         self.name = name
         self.column_type = column_type
@@ -77,32 +110,56 @@ class Field(object):
 
 
 class StringField(Field):
+    """
+
+    """
     def __init__(self, name=None, primary_key=False, default=None, ddl='varchar(100)'):
         super().__init__(name, ddl, primary_key, default)
 
 
 class BooleanField(Field):
+    """
+
+    """
     def __init__(self, name=None, default=False):
         super().__init__(name, 'boolean', False, default)
 
 
 class InterField(Field):
+    """
+
+    """
     def __init__(self, name=None, primary_key=False, default=0):
         super().__init__(name, 'bigint', primary_key, default)
 
 
 class FloatField(Field):
+    """
+
+    """
     def __int__(self, name=None, primary_key=False, default=0.0):
         super().__init__(name, 'real', primary_key, default)
 
 
 class TextField(Field):
+    """
+
+    """
     def __init__(self, name=None, default=None):
         super().__init__(name, 'text', False, default)
 
 
 class ModelMetaclass(type):
+    """
+
+    """
     def __new__(cls, name, bases, attrs):
+        """
+
+        :param name:
+        :param bases:
+        :param attrs:
+        """
         if name == 'Model':
             return type.__new__(cls, name, bases, attrs)
         table_name = attrs.get('__table__', None) or name
@@ -153,10 +210,15 @@ class Model(dict, metaclass=ModelMetaclass):
     def __setattr__(self, key, value):
         self[key] = value
 
-    def __getValue__(self, key):
+    def getValue(self, key):
         return getattr(self, key, None)
 
     def getValueOrDefault(self, key):
+        """
+
+        :param key:
+        :return:
+        """
         value = getattr(self, key, None)
         if value is None:
             field = self.__mappings__[key]
@@ -166,8 +228,16 @@ class Model(dict, metaclass=ModelMetaclass):
                 setattr(self, key, value)
         return value
 
+    #在model类里添加class方法，就可以让所有子类class
     @classmethod
     async def findAll(cls, where=None, args=None, **kw):
+        """
+
+        :param where:
+        :param args:
+        :param kw:
+        :return:
+        """
         """ find objects by where clause. """
         sql = [cls.__select__]
         if where:
@@ -195,6 +265,13 @@ class Model(dict, metaclass=ModelMetaclass):
 
     @classmethod
     async def findNumber(cls, selectField, where=None, args=None):
+        """
+
+        :param selectField:
+        :param where:
+        :param args:
+        :return:
+        """
         """ find number by select and where. """
         sql = ['select %s __num__ from `%s`' % (selectField, cls.__table__)]
         if where:
@@ -207,6 +284,11 @@ class Model(dict, metaclass=ModelMetaclass):
 
     @classmethod
     async def find(cls, pk):
+        """
+
+        :param pk:
+        :return:
+        """
         """ find object by primary key. """
         rs = await select('%s where `%s`=?' % (cls.__select__, cls.__primary_key__), [pk], 1)
         if len(rs) == 0:
@@ -214,6 +296,10 @@ class Model(dict, metaclass=ModelMetaclass):
         return cls(**rs[0])
 
     async def save(self):
+        """
+
+        :return:
+        """
         args = list(map(self.getValueOrDefault, self.__fields__))
         args.append(self.getValueOrDefault(self.__primary_key__))
         rows = await execute(self.__insert__, args)
