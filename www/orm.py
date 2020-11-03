@@ -228,7 +228,7 @@ class Model(dict, metaclass=ModelMetaclass):
                 setattr(self, key, value)
         return value
 
-    #在model类里添加class方法，就可以让所有子类class
+    # 在model类里添加class方法，就可以让所有子类class
     @classmethod
     async def findAll(cls, where=None, args=None, **kw):
         """

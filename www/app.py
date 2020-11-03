@@ -39,6 +39,7 @@ def init_jinja2(app, **kw):
 
 async def logger_factory(app, handler):
     async def logger(request):
+        logging.info('Request: %s %s' % (request.method, request.path))
         # await asyncio.sleep(0.3)
         return await handler(request)
     return logger
