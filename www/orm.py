@@ -110,49 +110,37 @@ class Field(object):
 
 
 class StringField(Field):
-    """
 
-    """
     def __init__(self, name=None, primary_key=False, default=None, ddl='varchar(100)'):
         super().__init__(name, ddl, primary_key, default)
 
 
 class BooleanField(Field):
-    """
 
-    """
     def __init__(self, name=None, default=False):
         super().__init__(name, 'boolean', False, default)
 
 
 class InterField(Field):
-    """
 
-    """
     def __init__(self, name=None, primary_key=False, default=0):
         super().__init__(name, 'bigint', primary_key, default)
 
 
 class FloatField(Field):
-    """
 
-    """
     def __int__(self, name=None, primary_key=False, default=0.0):
         super().__init__(name, 'real', primary_key, default)
 
 
 class TextField(Field):
-    """
 
-    """
     def __init__(self, name=None, default=None):
         super().__init__(name, 'text', False, default)
 
 
 class ModelMetaclass(type):
-    """
 
-    """
     def __new__(cls, name, bases, attrs):
         """
 
@@ -214,11 +202,6 @@ class Model(dict, metaclass=ModelMetaclass):
         return getattr(self, key, None)
 
     def getValueOrDefault(self, key):
-        """
-
-        :param key:
-        :return:
-        """
         value = getattr(self, key, None)
         if value is None:
             field = self.__mappings__[key]
@@ -280,7 +263,7 @@ class Model(dict, metaclass=ModelMetaclass):
         rs = await select(' '.join(sql), args, 1)
         if len(rs) == 0:
             return None
-        return rs[0]['__num__']
+        return rs[0]['_num_']
 
     @classmethod
     async def find(cls, pk):

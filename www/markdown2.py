@@ -89,7 +89,9 @@ __version_info__ = (2, 3, 0)
 __version__ = '.'.join(map(str, __version_info__))
 __author__ = "Trent Mick"
 
+import os
 import sys
+from pprint import pprint, pformat
 import re
 import logging
 
@@ -109,6 +111,7 @@ except ImportError:
     from urllib import quote  # python2
 
 if sys.version_info[:2] < (2, 4):
+    from sets import Set as set
     def reversed(sequence):
         for i in sequence[::-1]:
             yield i
@@ -134,8 +137,6 @@ log = logging.getLogger("markdown")
 DEFAULT_TAB_WIDTH = 4
 
 SECRET_SALT = bytes(randint(0, 1000000))
-
-
 def _hash_text(s):
     return 'md5-' + md5(SECRET_SALT + s.encode("utf-8")).hexdigest()
 
