@@ -256,13 +256,14 @@ class Model(dict, metaclass=ModelMetaclass):
         :return:
         """
         """ find number by select and where. """
-        sql = ['select %s __num__ from `%s`' % (selectField, cls.__table__)]
+        sql = ['select %s _num_ from `%s`' % (selectField, cls.__table__)]
         if where:
             sql.append('where')
             sql.append(where)
         rs = await select(' '.join(sql), args, 1)
         if len(rs) == 0:
             return None
+        print("#"*50,rs)
         return rs[0]['_num_']
 
     @classmethod

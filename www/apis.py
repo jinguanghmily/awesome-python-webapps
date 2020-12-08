@@ -12,34 +12,13 @@ import functools
 
 
 class Page(object):
-    '''
+    """
     Page object for display pages.
-    '''
+    """
 
     def __init__(self, item_count, page_index=1, page_size=10):
         """
         Init Pagination by item_count, page_index and page_size.
-        >>> p1 = Page(100, 1)
-        >>> p1.page_count
-        10
-        >>> p1.offset
-        0
-        >>> p1.limit
-        10
-        >>> p2 = Page(90, 9, 10)
-        >>> p2.page_count
-        9
-        >>> p2.offset
-        80
-        >>> p2.limit
-        10
-        >>> p3 = Page(91, 10, 10)
-        >>> p3.page_count
-        10
-        >>> p3.offset
-        90
-        >>> p3.limit
-        10
         """
         self.item_count = item_count
         self.page_size = page_size
@@ -92,6 +71,7 @@ class APIPermissionError(APIError):
     def __init__(self, message=''):
         super(APIPermissionError, self).__init__('permission:forbidden', 'permission', message)
 
-    if __name__ == '__main__':
-        import doctest
-        doctest.testmod()
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

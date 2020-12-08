@@ -30,6 +30,7 @@ class Blog(Model):
     user_name = StringField(ddl='varchar(50)')
     user_image = StringField(ddl='varchar(50)')
     name = StringField(ddl='varchar(50)')
+    summary = StringField(ddl='varchar(200)')
     content = TextField()
     # created_at = FloatField(default=time.time)
     created_at = FloatField(None, 'real', False, default=time.time)
@@ -37,7 +38,7 @@ class Blog(Model):
 class Comment(Model):
     __table__ = 'comments'
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    bolg_id = StringField(ddl='varchar(50)')
+    blog_id = StringField(ddl='varchar(50)')
     user_id = StringField(ddl='varchar(50)')
     user_name = StringField(ddl='varchar(50)')
     user_image = StringField(ddl='varchar(50)')
